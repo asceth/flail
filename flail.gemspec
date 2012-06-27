@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["John 'asceth' Long"]
   s.email       = ["machinist@asceth.com"]
-  s.homepage    = "http://github.com/asceth/flail"
+  s.homepage    = "https://github.com/asceth/flail"
   s.summary     = "Rails exception handler"
   s.description = "Handle Rails exceptions with the fail flail."
 
@@ -22,4 +22,3 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rr'
 end
-
