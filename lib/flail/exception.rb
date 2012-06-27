@@ -37,21 +37,25 @@ class Flail
     end
 
     def extract
-      @extract ||= {}.tap do |info|
-        info[:class_name]  = @exception.class.to_s        # @exception class
-        info[:message]     = @exception.to_s              # error message
-        info[:trace]       = @exception.backtrace.to_json # backtrace of error
-        info[:target_url]  = request.url                  # url of request
-        info[:referer_url] = request.referer              # referer
-        info[:params]      = request.params.to_json       # request parameters
-        info[:user_agent]  = request.user_agent           # user agent
-        info[:user]        = self.user.to_json            # current user
+      @extract ||= begin
+                     info = {}
 
-        # special variables
-        info[:environment] = Flail.configuration.env
-        info[:hostname]    = Flail.configuration.hostname
-        info[:api_key]    = Flail.configuration.api_key
-      end
+                     info[:class_name]  = @exception.class.to_s        # @exception class
+                     info[:message]     = @exception.to_s              # error message
+                     info[:trace]       = @exception.backtrace.to_json # backtrace of error
+                     info[:target_url]  = request.url                  # url of request
+                     info[:referer_url] = request.referer              # referer
+                     info[:params]      = request.params.to_json       # request parameters
+                     info[:user_agent]  = request.user_agent           # user agent
+                     info[:user]        = self.user.to_json            # current user
+
+                     # special variables
+                     info[:environment] = Flail.configuration.env
+                     info[:hostname]    = Flail.configuration.hostname
+                     info[:api_key]    = Flail.configuration.api_key
+
+                     info
+                   end
     end
 
     def ignore?
