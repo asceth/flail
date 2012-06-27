@@ -5,25 +5,12 @@ class Flail
     end
 
     def configuration
-      @configuration ||= Flail::Configuration.new
+      @configuration ||= Flail::Configuration.new.defaults!
     end
 
-    def swing(options = {})
-      rack = options.delete(:rack)
-
-      payload = {
-        :error => options[:error].to_s,
-        :message => options[:message].to_s,
-        :backtrace => [options[:backtrace]].flatten.map(&:to_s),
-        :session => options[:session],
-        :url => options[:url] || rack(:url)
-        :environment => options[:environment].to_s
-        :server => options[:server].to_s
-      }.to_json
-
+    def swing(payload)
       Flail.configuration.handler.call(payload)
     end
   end
   extend ClassMethods
 end
-
