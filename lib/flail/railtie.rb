@@ -1,7 +1,7 @@
 class Flail
   class Railtie < ::Rails::Railtie
     initializer "flail.use_rack_middleware" do |app|
-      app.config.middleware.insert 0, "Flail::Rack"
+      app.config.middleware.insert 0, Flail::Rack
     end
 
     config.after_initialize do

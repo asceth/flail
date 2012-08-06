@@ -1,5 +1,15 @@
 class Flail
   class Configuration
+    # for the default handler
+    HTTP_ERRORS = [Timeout::Error,
+                   Errno::EINVAL,
+                   Errno::ECONNRESET,
+                   EOFError,
+                   Net::HTTPBadResponse,
+                   Net::HTTPHeaderSyntaxError,
+                   Net::ProtocolError,
+                   Errno::ECONNREFUSED].freeze
+
     # custom handler for payloads
     attr_reader :handler
 
@@ -16,7 +26,7 @@ class Flail
     attr_reader :secure_endpoint
 
     # api key to use with payloads
-    attr_reader :api_key
+    attr_reader :tag
 
 
     def handle(&block)
@@ -39,8 +49,8 @@ class Flail
       @hostname = value
     end
 
-    def api(value)
-      @api_key = value
+    def tagged(value)
+      @tag = value
     end
 
     def defaults!
@@ -64,7 +74,7 @@ class Flail
         end
 
         begin
-          http.post(url.path, payload, HEADERS)
+          http.post(url.path, payload, {'Content-type' => 'application/json', 'Accept' => 'application/json'})
         rescue *HTTP_ERRORS => e
           nil
         end
