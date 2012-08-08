@@ -20,6 +20,7 @@ class Flail
 
     def controller
       @controller ||= @env['action_controller.instance']
+      @controller ||= @request.controller if @request.respond_to?(:controller)
     end
 
     def user

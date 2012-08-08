@@ -14,6 +14,7 @@ class Flail
       # Rails 2's exception helpers.
       def rescue_action_in_public_with_flail(exception)
         request.env['flail.request'] = request
+        request.env['action_controller.instance'] = self
         Flail::Exception.new(request.env, exception).handle!
         rescue_action_in_public_without_flail(exception)
       end
