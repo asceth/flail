@@ -46,6 +46,11 @@ class Flail
       end
     end
 
+    def clean_rack_env(data)
+      data.delete("rack.request.form_vars")
+      data
+    end
+
 
     #
     # Handling the exception
@@ -59,16 +64,21 @@ class Flail
                      info = {}
 
                      # rack env
-                     info[:rack]        = clean_unserializable_data(@env)
+                     info[:rack]        = clean_rack_env(clean_unserializable_data(@env))
+
                      info[:class_name]  = @exception.class.to_s             # @exception class
                      info[:message]     = @exception.to_s                   # error message
                      info[:trace]       = @exception.backtrace              # backtrace of error
                      info[:target_url]  = request_data[:target_url]         # url of request
                      info[:referer_url] = request_data[:referer_url]        # referer
-                     info[:parameters]  = request_data[:parameters]         # request parameters
                      info[:user_agent]  = request_data[:user_agent]         # user agent
                      info[:user]        = request_data[:user]               # current user
-                     info[:session_data]= request_data[:session_data]       # session
+
+                     # request parameters
+                     info[:parameters]  = clean_unserializable_data(request_data[:parameters])
+
+                     # session
+                     info[:session_data]= clean_unserializable_data(request_data[:session_data])
 
                      # special variables
                      info[:environment] = Flail.configuration.env
