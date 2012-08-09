@@ -39,7 +39,6 @@ class Flail
     end
 
     def extract
-      STDERR.puts @env.inspect
       @extract ||= begin
                      info = {}
 
