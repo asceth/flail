@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+require 'ostruct'
 require 'flail/rails/rescue_action'
 
 describe Flail::Rails::RescueAction do
@@ -40,6 +41,13 @@ describe Flail::Rails::RescueAction do
       FlailArmory.process_action_with_error(:session => data)
 
       FlailArmory.payload['session_data'].should == data
+    end
+
+    it "should send user data" do
+      user = OpenStruct.new(:attributes => {:id => 1, :login => 'jlong'})
+      FlailArmory.process_action_with_error(:user => user)
+
+      FlailArmory.payload['user'].should == {'id' => 1, 'login' => 'jlong'}
     end
   end
 end

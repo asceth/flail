@@ -51,6 +51,10 @@ class FlailArmory
         cattr_accessor :local
         define_method(:index, &action)
 
+        def current_user
+          @current_user
+        end
+
         def local_request?
           local
         end
@@ -68,10 +72,15 @@ class FlailArmory
       klass.local = options[:local]
 
       controller = klass.new
+
+      if options[:user]
+        controller.instance_variable_set(:@current_user, options[:user])
+      end
+
       options[:request].query_parameters = options[:request].query_parameters.merge(options[:params] || {})
       options[:request].session = ActionController::TestSession.new(options[:session] || {})
-
       options[:request].env['REQUEST_URI'] = options[:request].request_uri
+
       controller.process(options[:request], options[:response])
       controller
     end

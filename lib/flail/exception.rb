@@ -43,7 +43,7 @@ class Flail
                      info = {}
 
                      # rack env
-                     info[:rack]        = @env.to_json(:except => ['flail.request', 'flail.request.data'])
+                     info[:rack]        = @env.except('flail.request', 'flail.request.data')
                      info[:class_name]  = @exception.class.to_s             # @exception class
                      info[:message]     = @exception.to_s                   # error message
                      info[:trace]       = @exception.backtrace              # backtrace of error

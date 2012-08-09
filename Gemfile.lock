@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    flail (0.0.3)
+    flail (0.0.4)
 
 GEM
   remote: http://rubygems.org/
