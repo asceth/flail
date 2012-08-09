@@ -18,19 +18,15 @@ class Flail
                    end
     end
 
-    def controller
-      @controller ||= @env['action_controller.instance']
-      @controller ||= @request.controller if @request.respond_to?(:controller)
-    end
-
-    def user
-      if controller.respond_to?(:current_user)
-        current_user = controller.current_user
-
-        {:id => current_user.id, :name => current_user.to_s}
-      else
-        {}
-      end
+    def request_data
+      @request_data ||= if @env['flail.request.data']
+                          @env['flail.request.data']
+                        else
+                          {
+                            :parameters => {},
+                            :user => {},
+                          }
+                        end
     end
 
 
@@ -45,14 +41,15 @@ class Flail
       @extract ||= begin
                      info = {}
 
-                     info[:class_name]  = @exception.class.to_s        # @exception class
-                     info[:message]     = @exception.to_s              # error message
-                     info[:trace]       = @exception.backtrace.to_json # backtrace of error
-                     info[:target_url]  = request.url                  # url of request
-                     info[:referer_url] = request.referer              # referer
-                     info[:parameters]  = request.params.to_json       # request parameters
-                     info[:user_agent]  = request.user_agent           # user agent
-                     info[:user]        = self.user.to_json            # current user
+                     info[:rack]        = @env.to_json                      # rack env
+                     info[:class_name]  = @exception.class.to_s             # @exception class
+                     info[:message]     = @exception.to_s                   # error message
+                     info[:trace]       = @exception.backtrace.to_json      # backtrace of error
+                     info[:target_url]  = request_data[:target_url]         # url of request
+                     info[:referer_url] = request_data[:referer_url]        # referer
+                     info[:parameters]  = request_data[:parameters].to_json # request parameters
+                     info[:user_agent]  = request_data[:user_agent]         # user agent
+                     info[:user]        = request_data[:user].to_json       # current user
 
                      # special variables
                      info[:environment] = Flail.configuration.env

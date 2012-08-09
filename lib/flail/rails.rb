@@ -3,6 +3,7 @@ require 'flail/rails/rescue_action'
 
 if defined?(::ActionController::Base)
   ::ActionController::Base.send(:include, Flail::Rails::RescueAction)
+  ::ActionController::Base.send(:include, Flail::Rails::ControllerMethods)
 end
 
 if defined?(::Rails.configuration) && ::Rails.configuration.respond_to?(:middleware)

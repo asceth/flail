@@ -10,6 +10,11 @@ class Flail
         host Socket.gethostname
       end
 
+      ActiveSupport.on_load(:action_controller) do
+        require 'flail/rails/controller_methods'
+        include Flail::Rails::ControllerMethods
+      end
+
       if defined?(::ActionDispatch::DebugExceptions)
         # Rails 3.2.x
         require 'flail/rails/action_dispatch'
