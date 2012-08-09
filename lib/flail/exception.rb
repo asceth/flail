@@ -39,11 +39,12 @@ class Flail
     end
 
     def extract
+      STDERR.puts @env.inspect
       @extract ||= begin
                      info = {}
 
                      # rack env
-                     info[:rack]        = @env.except('flail.request', 'flail.request.data')
+                     info[:rack]        = @env.except('flail.request', 'flail.request.data', 'rack.errors', 'rack.input')
                      info[:class_name]  = @exception.class.to_s             # @exception class
                      info[:message]     = @exception.to_s                   # error message
                      info[:trace]       = @exception.backtrace              # backtrace of error
