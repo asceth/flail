@@ -1,8 +1,9 @@
 require 'socket'
+require 'json'
 
 class Flail
   class Exception
-    def initialize(env, exception)
+    def initialize(env, exception, local = false)
       @exception = exception
       @env = env
     end
@@ -41,15 +42,17 @@ class Flail
       @extract ||= begin
                      info = {}
 
-                     info[:rack]        = @env.to_json                      # rack env
+                     # rack env
+                     info[:rack]        = @env.to_json(:except => ['flail.request', 'flail.request.data'])
                      info[:class_name]  = @exception.class.to_s             # @exception class
                      info[:message]     = @exception.to_s                   # error message
-                     info[:trace]       = @exception.backtrace.to_json      # backtrace of error
+                     info[:trace]       = @exception.backtrace              # backtrace of error
                      info[:target_url]  = request_data[:target_url]         # url of request
                      info[:referer_url] = request_data[:referer_url]        # referer
-                     info[:parameters]  = request_data[:parameters].to_json # request parameters
+                     info[:parameters]  = request_data[:parameters]         # request parameters
                      info[:user_agent]  = request_data[:user_agent]         # user agent
-                     info[:user]        = request_data[:user].to_json       # current user
+                     info[:user]        = request_data[:user]               # current user
+                     info[:session_data]= request_data[:session_data]       # session
 
                      # special variables
                      info[:environment] = Flail.configuration.env
