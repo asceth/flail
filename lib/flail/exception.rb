@@ -42,12 +42,26 @@ class Flail
           clean_unserializable_data(value, stack + [data.object_id])
         end
       else
-        data.to_s
+        input = if ''.respond_to?(:encode)
+                  data.to_s.encode(Encoding::UTF_8, :undef => :replace)
+                else
+                  require 'iconv'
+                  ic = Iconv.new("UTF-8//IGNORE", "UTF-8")
+                  ic.iconv(data.to_s + ' ')[0..-2]
+                end
+        begin
+          input.to_json
+        rescue Exception => e
+          input = "redundant utf-8 sequence"
+        end
+
+        input
       end
     end
 
     def clean_rack_env(data)
       data.delete("rack.request.form_vars")
+      data.delete("rack.input")
       data
     end
 
@@ -64,15 +78,17 @@ class Flail
                      info = {}
 
                      # rack env
-                     info[:rack]        = clean_rack_env(clean_unserializable_data(@env))
+                     info[:rack]        = clean_unserializable_data(clean_rack_env(@env))
 
-                     info[:class_name]  = @exception.class.to_s             # @exception class
+                     info[:class_name]  = @exception.class.name             # @exception class
                      info[:message]     = @exception.to_s                   # error message
-                     info[:trace]       = @exception.backtrace              # backtrace of error
                      info[:target_url]  = request_data[:target_url]         # url of request
                      info[:referer_url] = request_data[:referer_url]        # referer
                      info[:user_agent]  = request_data[:user_agent]         # user agent
                      info[:user]        = request_data[:user]               # current user
+
+                     # backtrace of error
+                     info[:trace]       = Flail::Backtrace.parse(@exception.backtrace, :filters => Flail::Backtrace::DEFAULT_FILTERS).to_hash
 
                      # request parameters
                      info[:parameters]  = clean_unserializable_data(request_data[:parameters])
@@ -83,7 +99,7 @@ class Flail
                      # special variables
                      info[:environment] = Flail.configuration.env
                      info[:hostname]    = Flail.configuration.hostname
-                     info[:tag]    = Flail.configuration.tag
+                     info[:tag]         = Flail.configuration.tag
 
                      info
                    end

@@ -20,6 +20,9 @@ require 'flail'
 require 'flail/rails/controller_methods'
 require 'flail/rails/rescue_action'
 
+
+Dir["#{File.expand_path(File.dirname(__FILE__))}/support/*.rb"].map {|file| require(file)}
+
 class FlailArmory
 
   module ClassMethods

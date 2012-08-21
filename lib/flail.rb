@@ -4,6 +4,7 @@ require 'socket'
 
 require 'flail/base'
 require 'flail/configuration'
+require 'flail/backtrace'
 require 'flail/exception'
 require 'flail/rack'
 
