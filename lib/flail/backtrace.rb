@@ -97,7 +97,7 @@ class Flail
       end
     end
 
-    def to_hash
+    def to_ary
       lines.inject([]) do |collector, line|
         collector << {
           :number => line.number,

@@ -88,7 +88,7 @@ class Flail
                      info[:user]        = request_data[:user]               # current user
 
                      # backtrace of error
-                     info[:trace]       = Flail::Backtrace.parse(@exception.backtrace, :filters => Flail::Backtrace::DEFAULT_FILTERS).to_hash
+                     info[:trace]       = Flail::Backtrace.parse(@exception.backtrace, :filters => Flail::Backtrace::DEFAULT_FILTERS).to_ary
 
                      # request parameters
                      info[:parameters]  = clean_unserializable_data(request_data[:parameters])
