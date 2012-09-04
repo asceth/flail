@@ -14,8 +14,10 @@ class Flail
     def request
       @request ||= if @env['flail.request']
                      @env['flail.request']
-                   else
+                   elsif defined?(ActionDispath::Request)
                      ActionDispatch::Request.new(@env)
+                   else
+                     nil
                    end
     end
 
@@ -108,7 +110,8 @@ class Flail
     def ignore?
       # Ignore requests with user agent string matching
       # this regxp as they are surely made by bots
-      if request.user_agent =~ /\b(Baidu|Gigabot|Googlebot|libwww-perl|lwp-trivial|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|Yandex|Jyxobot|Huaweisymantecspider|ApptusBot)\b/i
+      user_agents = request.respond_to?(:user_agent) ? request.user_agent : @env['HTTP_USER_AGENT']
+      if user_agents =~ /\b(Baidu|Gigabot|Googlebot|libwww-perl|lwp-trivial|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|Yandex|Jyxobot|Huaweisymantecspider|ApptusBot)\b/i
         return true
       end
 
