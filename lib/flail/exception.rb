@@ -4,7 +4,7 @@ require 'json'
 class Flail
   class Exception
     def self.notify(exception, request_data = {})
-      exception.set_backtrace(Kernel.caller)
+      exception.set_backtrace(Kernel.caller) if exception.backtrace.nil?
       env = {'flail.request' => {'user_agent' => 'internal'}}
 
       fe = Flail::Exception.new(env, exception)
