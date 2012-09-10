@@ -3,6 +3,14 @@ require 'json'
 
 class Flail
   class Exception
+    def self.notify(exception, request_data = {})
+      env = {'flail.request' => {'user_agent' => 'internal'}}
+
+      fe = Flail::Exception.new(env, exception)
+      fe.request_data = fe.request_data.merge(request_data)
+      fe.handle!
+    end
+
     def initialize(env, exception, local = false)
       @exception = exception
       @env = env
@@ -28,6 +36,10 @@ class Flail
                             :user => {},
                           }
                         end
+    end
+
+    def request_data=(value)
+      @request_data = value
     end
 
     def clean_unserializable_data(data, stack = [])
@@ -108,7 +120,7 @@ class Flail
     def ignore?
       # Ignore requests with user agent string matching
       # this regxp as they are surely made by bots
-      if request.user_agent =~ /\b(Baidu|Gigabot|Googlebot|libwww-perl|lwp-trivial|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|Yandex|Jyxobot|Huaweisymantecspider|ApptusBot)\b/i
+      if request.respond_to?(:user_agent) && request.user_agent =~ /\b(Baidu|Gigabot|Googlebot|libwww-perl|lwp-trivial|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg|Yandex|Jyxobot|Huaweisymantecspider|ApptusBot)\b/i
         return true
       end
 

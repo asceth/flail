@@ -24,4 +24,8 @@ describe Flail::Exception do
       end
     end
   end
+
+  it "should be able to accept and generic error with no request attached" do
+    lambda { Flail::Exception.notify(Exception.new) }.should_not raise_error
+  end
 end
