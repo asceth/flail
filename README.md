@@ -9,18 +9,18 @@ Flail is an exception catcher for Rack applications.
 ### Install
 
 ###### Rails 3
-```
+```ruby
 gem :flail
 ```
 
 
 ###### Rails 2.3.x
-```
+```ruby
 gem :flail, :require => false
 ```
 
 When configuring in the initializer as seen in Usage below be sure to add
-```
+```ruby
 require 'flail/rails'
 ```
 
