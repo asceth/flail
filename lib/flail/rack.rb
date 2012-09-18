@@ -7,7 +7,7 @@ class Flail
     def call(env)
       begin
         response = @app.call(env)
-      rescue Exception => exception
+      rescue ::Exception => exception
         Flail::Exception.new(env, exception).handle!
         raise
       end
