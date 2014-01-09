@@ -33,6 +33,12 @@ class Flail
     def request_data
       @request_data ||= if @env['flail.request.data']
                           @env['flail.request.data']
+                        elsif @env['action_dispatch.request.parameters']
+                          # Hopefully temporary hack to get at least the params out of Rails 3 applications
+                          {
+                            :parameters => @env['action_dispatch.request.parameters'],
+                            :user => {}
+                          }
                         else
                           {
                             :parameters => {},
