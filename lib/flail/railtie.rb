@@ -10,6 +10,8 @@ class Flail
         host Socket.gethostname
       end
 
+      # Add methods to the Aciont Controller so they may be run from within the
+      # controller scope. Useful for getting user data and similar.
       ActiveSupport.on_load(:action_controller) do
         require 'flail/rails/controller_methods'
         include Flail::Rails::ControllerMethods
