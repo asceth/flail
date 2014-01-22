@@ -9,16 +9,12 @@ RSpec.configure do |config|
   config.mock_with :rr
 end
 
-require 'action_controller'
-require 'action_controller/test_process'
 require 'active_record'
-require 'active_support'
 require 'rack'
 require 'sham_rack'
 
 require 'flail'
 require 'flail/rails/controller_methods'
-require 'flail/rails/rescue_action'
 
 
 Dir["#{File.expand_path(File.dirname(__FILE__))}/support/*.rb"].map {|file| require(file)}
@@ -35,7 +31,6 @@ class FlailArmory
     def build_controller_class(&definition)
       Class.new(ActionController::Base).tap do |klass|
         klass.__send__(:include, Flail::Rails::ControllerMethods)
-        klass.__send__(:include, Flail::Rails::RescueAction)
         klass.class_eval(&definition) if definition
 
         klass.class_eval do

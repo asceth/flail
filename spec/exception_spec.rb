@@ -6,12 +6,15 @@ require 'flail/backtrace'
 require 'flail/exception'
 
 describe Flail::Exception do
+  
+  #Setup flail with dummy handler as these tests aren't very complex.
+  Flail.configure do
+    handle do |payload|
+      # Do nothing.
+    end
+  end
 
-  subject { Flail::Exception.new({}, Exception.new) }
-  SAMPLE_BACKTRACE = [
-                      "app/models/user.rb:13:in `magic'",
-                      "app/controllers/users_controller.rb:8:in `index'"
-                     ]
+  subject { Flail::Exception.new(Exception.new, {}) }
 
   it "should not choke on bad utf-8" do
     b1r = 0xc0..0xc2
@@ -25,7 +28,7 @@ describe Flail::Exception do
     end
   end
 
-  it "should be able to accept and generic error with no request attached" do
+  it "should be able to accept a generic exception with no request attached" do
     lambda { Flail::Exception.notify(Exception.new) }.should_not raise_error
   end
 end

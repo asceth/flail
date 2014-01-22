@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 require 'ostruct'
-require 'flail/rack'
+require 'flail/rack_middleware_exception_hook'
 
-describe Flail::Rack do
+describe Flail::RackMiddlewareExceptionHook do
 
-  subject { Flail::Rack.new lambda {|env| "val: #{env.fetch(:required_key)}" } }
+  subject { Flail::RackMiddlewareExceptionHook.new lambda {|env| "val: #{env.fetch(:required_key)}" } }
 
   context "when an exception is raised by the app" do
     let(:env) { {} }

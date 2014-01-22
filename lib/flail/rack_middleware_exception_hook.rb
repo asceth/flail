@@ -1,5 +1,5 @@
 class Flail
-  class Rack
+  class RackMiddlewareExceptionHook
     def initialize(app)
       @app = app
     end
