@@ -52,4 +52,5 @@ https://github.com/asceth/flail_web
 ### Authors
 
 Original author: John "asceth" Long
+
 Contributor: Ben Fenner
