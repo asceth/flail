@@ -99,7 +99,7 @@ class Flail
                      info = {}
 
                      # rack env
-                     info[:rack]        = clean_unserializable_data(clean_rack_env(@env))
+                     info[:rack]        = clean_unserializable_data(clean_rack_env(@env.dup))
 
                      info[:class_name]  = @exception.class.name             # @exception class
                      info[:message]     = @exception.to_s                   # error message
