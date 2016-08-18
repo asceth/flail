@@ -1,25 +1,44 @@
 class Flail
   module Rails
     module ControllerMethods
-    
+
       def self.included(base)
-        base.send(:before_filter, :inject_flail_data_into_environment)
+        base.class_eval do
+          if respond_to?(:before_action)
+            before_action :inject_flail_data_into_environment
+          else
+            before_filter :inject_flail_data_into_environment
+          end
+        end
       end
 
       # This method is inserted into the host application's controllers as a before_filter
-      # and is used to pass the parameters, session data, user data, and URL data from the app's 
-      # controller to the flail gem via the env variable (data is always passed, even if no 
-      # exception is thrown). This hook only works when a host app's controller is called. 
-      # Routing error exceptions are thrown before the controller is called so those errors are 
+      # and is used to pass the parameters, session data, user data, and URL data from the app's
+      # controller to the flail gem via the env variable (data is always passed, even if no
+      # exception is thrown). This hook only works when a host app's controller is called.
+      # Routing error exceptions are thrown before the controller is called so those errors are
       # handled elsewhere and contain less information (mainly the user data is missing).
       def inject_flail_data_into_environment
         request.env['flail.request'] ||= request
         request.env['flail.request.data'] ||= flail_request_data
       end
 
+      def flail_params
+        result = nil
+        result ||= request.env['action_dispatch.parameters']
+        result ||= flail_rack_params
+        result ||= {}
+        result
+      end
+
+      def flail_rack_params
+        req = Rack::Request.new(request.env)
+        req.params if request.env['rack.input']
+      end
+
       def flail_request_data
         {
-          :parameters => params.to_hash,
+          :parameters => flail_params.to_hash,
           :session_data => flail_session_data,
           :target_url => request.url,
           :referer_url => request.referer,

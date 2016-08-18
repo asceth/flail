@@ -2,7 +2,7 @@ Flail is an exception catcher for Rack applications.
 
 ##### Supports
 
-* Rails 3.x
+* Rails 3.x, 4.x, 5.x
 * (See earlier 0.x.x releases for Rails 2.3.x support)
 
 

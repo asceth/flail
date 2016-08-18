@@ -8,6 +8,10 @@ class Flail
       begin
         response = @app.call(env)
       rescue ::Exception => exception
+        STDERR.puts exception.inspect
+        exception.backtrace.each do |line|
+          STDERR.puts line.inspect
+        end
         Flail::Exception.new(env, exception).handle!
         raise
       end

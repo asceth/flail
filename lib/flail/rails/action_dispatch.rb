@@ -2,13 +2,16 @@ class Flail
   module Rails
     module ActionDispatch
       def self.included(base)
-        base.send(:alias_method_chain, :render_exception, :flail)
+        base.class_eval do
+          prepend InstanceMethods
+        end
       end
 
-      def render_exception_with_flail(env, exception)
-        Flail::Exception.new(env, exception).handle!
-
-        render_exception_without_flail(env, exception)
+      module InstanceMethods
+        def render_exception(env, exception)
+          Flail::Exception.new(env, exception).handle!
+          super
+        end
       end
     end
   end
