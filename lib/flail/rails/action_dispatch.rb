@@ -8,8 +8,15 @@ class Flail
       end
 
       module InstanceMethods
-        def render_exception(env, exception)
-          Flail::Exception.new(env, exception).handle!
+        def render_exception(request_or_env, exception)
+          _env = if request_or_env.is_a?(::ActionDispatch::Request)
+                   request_or_env.env
+                 else
+                   request_or_env
+                 end
+
+          Flail::Exception.new(_env, exception).handle!
+
           super
         end
       end
